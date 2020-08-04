@@ -33,28 +33,20 @@ class OpenWeatherController extends BaseController
         $contents = (string) $response->getBody();
         $content = \GuzzleHttp\json_decode($contents);
 
-        $json = json_decode($contents, true);
-
-        $json["main"]["fahrenheit"] = array();
-        $json["main"]["fahrenheit"]["temp"] = (float) number_format(( $json["main"]["temp"] - 273.15) * 9 / 5 + 32,2 );
-        $json["main"]["fahrenheit"]["feels_like"] = (float) number_format(( $json["main"]["feels_like"] - 273.15) * 9 / 5 + 32,2 );
-        $json["main"]["fahrenheit"]["temp_min"] = (float) number_format(( $json["main"]["temp_min"] - 273.15) * 9 / 5 + 32,2 );
-        $json["main"]["fahrenheit"]["temp_max"] = (float) number_format(( $json["main"]["temp_max"] - 273.15) * 9 / 5 + 32,2 );
+        $content_json = json_decode($contents, true);
+        $content_json["main"]["fahrenheit"] = array();
+        $content_json["main"]["fahrenheit"] = Country::convert($content_json["main"],"fahrenheit");
 
         $json["main"]["celcius"] = array();
-        $json["main"]["celcius"]["temp"] = (float) number_format(( $json["main"]["temp"] - 273.15)  ,2 );
-        $json["main"]["celcius"]["feels_like"] = (float) number_format(( $json["main"]["feels_like"] - 273.15)  ,2 );
-        $json["main"]["celcius"]["temp_min"] = (float) number_format(( $json["main"]["temp_min"] - 273.15)  ,2 );
-        $json["main"]["celcius"]["temp_max"] = (float) number_format(( $json["main"]["temp_max"] - 273.15)  ,2 );
+        $content_json["main"]["celcius"] = Country::convert($content_json["main"],"celcius");
 
-        return $json;
+        return $content_json;
     }
 
     public function  getByCountryCode ($code){
 
         $city =  Country::getCountryCapital($code);
-
-        $client = new Client(['base_uri' => 'https://api.openweathermap.org/data/2.5/weather?q=']);
+        $client = new Client();
         $appid =    env('OPENWEATHER_KEY');
 
         $response =  $client->request('GET', 'https://api.openweathermap.org/data/2.5/weather', [
@@ -71,20 +63,15 @@ class OpenWeatherController extends BaseController
         $contents = (string) $response->getBody();
         $content = \GuzzleHttp\json_decode($contents);
 
-        $json = json_decode($contents, true);
-
-        $json["main"]["fahrenheit"] = array();
-        $json["main"]["fahrenheit"]["temp"] = (float) number_format(( $json["main"]["temp"] - 273.15) * 9 / 5 + 32,2 );
-        $json["main"]["fahrenheit"]["feels_like"] = (float)  number_format(( $json["main"]["feels_like"] - 273.15) * 9 / 5 + 32,2 );
-        $json["main"]["fahrenheit"]["temp_min"] = (float) number_format(( $json["main"]["temp_min"] - 273.15) * 9 / 5 + 32,2 );
-        $json["main"]["fahrenheit"]["temp_max"] = (float) number_format(( $json["main"]["temp_max"] - 273.15) * 9 / 5 + 32,2 );
+        $content_json = json_decode($contents, true);
+        $content_json["main"]["fahrenheit"] = array();
+        $content_json["main"]["fahrenheit"] = Country::convert($content_json["main"],"fahrenheit");
 
         $json["main"]["celcius"] = array();
-        $json["main"]["celcius"]["temp"] = (float) number_format(( $json["main"]["temp"] - 273.15)  ,2 );
-        $json["main"]["celcius"]["feels_like"] = (float) number_format(( $json["main"]["feels_like"] - 273.15)  ,2 );
-        $json["main"]["celcius"]["temp_min"] = (float) number_format(( $json["main"]["temp_min"] - 273.15)  ,2 );
-        $json["main"]["celcius"]["temp_max"] = (float) number_format(( $json["main"]["temp_max"] - 273.15)  ,2 );
+        $content_json["main"]["celcius"] = Country::convert($content_json["main"],"celcius");
 
-        return $json;
+        return $content_json;
+
+
      }
 }

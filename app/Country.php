@@ -267,27 +267,46 @@ class Country extends Model
 
 
 
+
+    public static function getCountryCapital ( $name  ) {
+         $key = array_search($name, array_column(self::$capitals, 'alpha2'));
+         return self::$capitals[$key]["capital"];
+    }
+
+    public static function convert($array, $type){
+
+        $array_temp = array();
+
+        array_walk_recursive($array, function($value, $key)  use(&$array_temp, $type) {
+           switch ($type){
+               case  "fahrenheit" :
+                   $array_temp [$key] = (float) number_format(( $value - 273.15) * 9 / 5 + 32,2 );
+                   break;
+               case  "celcius" :
+                   $array_temp [$key] = (float) number_format(( $value - 32) * 5/9  ,2 );
+
+                   break;
+               default:
+                   break;
+           }
+        });
+
+        return $array_temp;
+    }
+
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-
-    ];
+    protected $fillable = [];
 
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
-    protected $hidden = [
+    protected $hidden = [];
 
-    ];
-
-    public static function getCountryCapital ( $name  ) {
-         $key = array_search($name, array_column(self::$capitals, 'alpha2'));
-         return self::$capitals[$key]["capital"];
-
-    }
 }
