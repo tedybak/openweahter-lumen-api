@@ -278,17 +278,19 @@ class Country extends Model
         $array_temp = array();
 
         array_walk_recursive($array, function($value, $key)  use(&$array_temp, $type) {
-           switch ($type){
-               case  "fahrenheit" :
-                   $array_temp [$key] = (float) number_format(( $value - 273.15) * 9 / 5 + 32,2 );
-                   break;
-               case  "celcius" :
-                   $array_temp [$key] = (float) number_format(( $value - 32) * 5/9  ,2 );
+            if( $key != 'pressure' && $key != 'humidity') {
 
-                   break;
-               default:
-                   break;
-           }
+                switch ($type) {
+                    case  "fahrenheit" :
+                        $array_temp [$key] = (float)number_format(($value - 273.15) * 9 / 5 + 32, 2);
+                        break;
+                    case  "celcius" :
+                        $array_temp [$key] = (float)number_format(($value - 32) * 5 / 9, 2);
+                        break;
+                    default:
+                        break;
+                }
+            }
         });
 
         return $array_temp;
