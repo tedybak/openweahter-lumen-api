@@ -35,7 +35,7 @@ class OpenWeatherController extends BaseController
                         'Content-Type' => 'application/json',
                     ]
                 ]);
-                $contents = (string)$response->getBody();
+                $contents = (string) $response->getBody();
                 $content = \GuzzleHttp\json_decode($contents);
 
                 $content_json = json_decode($contents, true);
@@ -49,7 +49,7 @@ class OpenWeatherController extends BaseController
             } catch (\Exception $e){
                 return response()->json(['error' => 'Not Found'],404);
             }
-        }else{
+        } else{
             return response()->json(['error' => 'Unauthorized'],401);
         }
     }
