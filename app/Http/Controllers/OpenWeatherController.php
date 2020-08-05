@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class OpenWeatherController extends BaseController
 {
-    public function getByName ( Request $request, $name )    {
+    public function getByCityName ( Request $request, $name )    {
 
         //For temperature in Fahrenheit use units=imperial
         //For temperature in Celsius use units=metric
