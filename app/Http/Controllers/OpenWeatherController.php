@@ -23,27 +23,32 @@ class OpenWeatherController extends BaseController
             $client = new Client();
 
             $appid = env('OPENWEATHER_KEY');
-            $response = $client->request('GET', 'https://api.openweathermap.org/data/2.5/weather', [
-                'query' => [
-                    'q' => $name,
-                    'appid' => $appid
-                ],
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ]
-            ]);
-            $contents = (string)$response->getBody();
-            $content = \GuzzleHttp\json_decode($contents);
 
-            $content_json = json_decode($contents, true);
-            $content_json["main"]["fahrenheit"] = array();
-            $content_json["main"]["fahrenheit"] = Country::convert($content_json["main"], "fahrenheit");
+            try {
+                $response = $client->request('GET', 'https://api.openweathermap.org/data/2.5/weather', [
+                    'query' => [
+                        'q' => $name,
+                        'appid' => $appid
+                    ],
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'Content-Type' => 'application/json',
+                    ]
+                ]);
+                $contents = (string)$response->getBody();
+                $content = \GuzzleHttp\json_decode($contents);
 
-            $json["main"]["celcius"] = array();
-            $content_json["main"]["celcius"] = Country::convert($content_json["main"], "celcius");
+                $content_json = json_decode($contents, true);
+                $content_json["main"]["fahrenheit"] = array();
+                $content_json["main"]["fahrenheit"] = Country::convert($content_json["main"], "fahrenheit");
 
-            return $content_json;
+                $json["main"]["celcius"] = array();
+                $content_json["main"]["celcius"] = Country::convert($content_json["main"], "celcius");
+
+                return $content_json;
+            } catch (\Exception $e){
+                return response()->json(['error' => 'Not Found'],404);
+            }
         }else{
             return response()->json(['error' => 'Unauthorized'],401);
         }
@@ -83,7 +88,7 @@ class OpenWeatherController extends BaseController
                 return $content_json;
 
             }catch (\Exception $e){
-                return response()->json(['error' => 'country code must be in Alpha 2 format'],401);
+                return response()->json(['error' => 'country code must be in Alpha 2 format'],404);
             }
 
         } else {
