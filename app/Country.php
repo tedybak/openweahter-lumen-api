@@ -270,7 +270,11 @@ class Country extends Model
 
     public static function getCountryCapital ( $name  ) {
          $key = array_search($name, array_column(self::$capitals, 'alpha2'));
-         return self::$capitals[$key]["capital"];
+        if( isset($key ) && $key !== false){
+            return self::$capitals[$key]["capital"];
+        }
+        return false;
+
     }
 
     public static function convert($array, $type){
