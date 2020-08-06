@@ -266,15 +266,22 @@ class Country extends Model
     );
 
 
-
-
-    public static function getCountryCapital ( $name  ) {
+    public static function getCountryByCode ( $name  ) {
          $key = array_search($name, array_column(self::$capitals, 'alpha2'));
         if( isset($key ) && $key !== false){
             return self::$capitals[$key]["capital"];
         }
         return false;
+    }
 
+
+    public static function getCityByCode ( $cityCode  ) {
+//        $key = array_search($name, array_column(self::$capitals, 'alpha2'));
+//        if( isset($key ) && $key !== false){
+//            return self::$capitals[$key]["capital"];
+//        }
+//        return false;
+        return 'London';
     }
 
     public static function convert($array, $type){
@@ -299,20 +306,5 @@ class Country extends Model
 
         return $array_temp;
     }
-
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [];
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = [];
 
 }

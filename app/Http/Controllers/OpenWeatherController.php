@@ -12,11 +12,11 @@ use Illuminate\Http\Request;
 
 class OpenWeatherController extends BaseController
 {
-    public function getByCityName ( Request $request, $name )    {
+    public function getByCityCode ( Request $request, $name )    {
 
-        //For temperature in Fahrenheit use units=imperial
-        //For temperature in Celsius use units=metric
-        //Temperature in Kelvin is used by default, no need to use units parameter in API call
+        // Temperature in Kelvin is used by default, no need to use units parameter in API call
+        // For temperature in Fahrenheit use units=imperial
+        // For temperature in Celsius use units=metric
 
         if ($request->isJson()) {
 
@@ -25,9 +25,10 @@ class OpenWeatherController extends BaseController
             $appid = env('OPENWEATHER_KEY');
 
             try {
-                $response = $client->request('GET', 'https://api.openweathermap.org/data/2.5/weather', [
+                $city = Country::getCityByCode(strtoupper($name));
+                 $response = $client->request('GET', 'https://api.openweathermap.org/data/2.5/weather', [
                     'query' => [
-                        'q' => $name,
+                        'q' => $city,
                         'appid' => $appid
                     ],
                     'headers' => [
@@ -45,7 +46,7 @@ class OpenWeatherController extends BaseController
                 $json["celcius"] = array();
                 $content_json["celcius"] = Country::convert($content_json["main"], "celcius");
 
-                return $content_json;
+                return response()->json($content_json,200);
             } catch (\Exception $e){
                 return response()->json(['error' => 'Not Found'],404);
             }
@@ -60,7 +61,7 @@ class OpenWeatherController extends BaseController
 
             try {
 
-                $city = Country::getCountryCapital($code);
+                $city = Country::getCountryByCode(strtoupper($code));
                 $client = new Client();
                 $appid = env('OPENWEATHER_KEY');
 
@@ -85,7 +86,7 @@ class OpenWeatherController extends BaseController
                 $json["celcius"] = array();
                 $content_json["celcius"] = Country::convert($content_json["main"], "celcius");
 
-                return $content_json;
+                return response()->json($content_json,200);
 
             }catch (\Exception $e){
                 return response()->json(['error' => 'country code must be in Alpha 2 format'],404);
