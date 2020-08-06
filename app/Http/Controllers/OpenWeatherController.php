@@ -39,11 +39,11 @@ class OpenWeatherController extends BaseController
                 $content = \GuzzleHttp\json_decode($contents);
 
                 $content_json = json_decode($contents, true);
-                $content_json["main"]["fahrenheit"] = array();
-                $content_json["main"]["fahrenheit"] = Country::convert($content_json["main"], "fahrenheit");
+                $content_json["fahrenheit"] = array();
+                $content_json["fahrenheit"] = Country::convert($content_json["main"], "fahrenheit");
 
-                $json["main"]["celcius"] = array();
-                $content_json["main"]["celcius"] = Country::convert($content_json["main"], "celcius");
+                $json["celcius"] = array();
+                $content_json["celcius"] = Country::convert($content_json["main"], "celcius");
 
                 return $content_json;
             } catch (\Exception $e){
@@ -79,11 +79,11 @@ class OpenWeatherController extends BaseController
                 $content = \GuzzleHttp\json_decode($contents);
 
                 $content_json = json_decode($contents, true);
-                $content_json["main"]["fahrenheit"] = array();
-                $content_json["main"]["fahrenheit"] = Country::convert($content_json["main"], "fahrenheit");
+                $content_json["fahrenheit"] = array();
+                $content_json["fahrenheit"] = Country::convert($content_json["main"], "fahrenheit");
 
-                $json["main"]["celcius"] = array();
-                $content_json["main"]["celcius"] = Country::convert($content_json["main"], "celcius");
+                $json["celcius"] = array();
+                $content_json["celcius"] = Country::convert($content_json["main"], "celcius");
 
                 return $content_json;
 

@@ -289,7 +289,7 @@ class Country extends Model
                         $array_temp [$key] = (float)number_format(($value - 273.15) * 9 / 5 + 32, 2);
                         break;
                     case  "celcius" :
-                        $array_temp [$key] = (float)number_format(($value - 32) * 5 / 9, 2);
+                        $array_temp [$key] = (float)number_format(($value - 273.15)  , 2);
                         break;
                     default:
                         break;
