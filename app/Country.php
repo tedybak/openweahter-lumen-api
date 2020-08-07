@@ -89,7 +89,11 @@ class Country extends Model
         array('alpha2' => 'FO','alpha3' => 'FRO','fips' => 'FO','country' => 'Faroe Islands','capital' => 'Torshavn','continent' => 'EU'),
         array('alpha2' => 'FR','alpha3' => 'FRA','fips' => 'FR','country' => 'France','capital' => 'Paris','continent' => 'EU'),
         array('alpha2' => 'GA','alpha3' => 'GAB','fips' => 'GB','country' => 'Gabon','capital' => 'Libreville','continent' => 'AF'),
-        array('alpha2' => 'GB','alpha3' => 'GBR','fips' => 'UK','country' => 'United Kingdom','capital' => 'London','continent' => 'EU'),
+
+        array('alpha2' => 'GB','alpha3' => 'GBR','fips' => 'UK','country' => 'United Kingdom','capital' => 'London','continent' => 'EU','aliases' => array( 'LDN')),
+
+
+
         array('alpha2' => 'GD','alpha3' => 'GRD','fips' => 'GJ','country' => 'Grenada','capital' => 'St. George\'s','continent' => 'NA'),
         array('alpha2' => 'GE','alpha3' => 'GEO','fips' => 'GG','country' => 'Georgia','capital' => 'Tbilisi','continent' => 'AS'),
         array('alpha2' => 'GF','alpha3' => 'GUF','fips' => 'FG','country' => 'French Guiana','capital' => 'Cayenne','continent' => 'SA'),
@@ -276,13 +280,18 @@ class Country extends Model
 
 
     public static function getCityByCode ( $cityCode  ) {
-//        $key = array_search($name, array_column(self::$capitals, 'alpha2'));
-//        if( isset($key ) && $key !== false){
-//            return self::$capitals[$key]["capital"];
-//        }
-//        return false;
-        return 'London';
-    }
+        foreach (self::$capitals as $key => $value){
+            foreach ($value as $key2 => $value2){
+                if ($key2 == "aliases") {
+                    foreach ($value2 as $val){
+                        if ( $cityCode == $val){
+                            return self::$capitals[$key]["capital"];
+                        }
+                    }
+                }
+            }
+        }
+     }
 
     public static function convert($array, $type){
 
@@ -293,10 +302,10 @@ class Country extends Model
 
                 switch ($type) {
                     case  "fahrenheit" :
-                        $array_temp [$key] = (float)number_format(($value - 273.15) * 9 / 5 + 32, 2);
+                        $array_temp [$key] = (float)number_format(($value * 9 / 5)  + 32, 2);
                         break;
-                    case  "celcius" :
-                        $array_temp [$key] = (float)number_format(($value - 273.15)  , 2);
+                    case  "kelvin" :
+                        $array_temp [$key] = (float)number_format(($value + 273.15)  , 2);
                         break;
                     default:
                         break;

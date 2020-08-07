@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class OpenWeatherController extends BaseController
 {
-    public function getByCityCode ( Request $request, $name )    {
+    public function getCityByCode ( Request $request, $cityCode )    {
 
         // Temperature in Kelvin is used by default, no need to use units parameter in API call
         // For temperature in Fahrenheit use units=imperial
@@ -23,13 +23,19 @@ class OpenWeatherController extends BaseController
             $client = new Client();
 
             $appid = env('OPENWEATHER_KEY');
+            $default = env('FORMAT_SISTEM');
+            $baser_url = env('BASE_URL');
+
 
             try {
-                $city = Country::getCityByCode(strtoupper($name));
-                 $response = $client->request('GET', 'https://api.openweathermap.org/data/2.5/weather', [
+                $city = Country::getCityByCode(strtoupper($cityCode));
+
+
+                 $response = $client->request('GET', $baser_url, [
                     'query' => [
                         'q' => $city,
-                        'appid' => $appid
+                        'appid' => $appid,
+                        'units' => $default
                     ],
                     'headers' => [
                         'Accept' => 'application/json',
@@ -43,32 +49,34 @@ class OpenWeatherController extends BaseController
                 $content_json["fahrenheit"] = array();
                 $content_json["fahrenheit"] = Country::convert($content_json["main"], "fahrenheit");
 
-                $json["celcius"] = array();
-                $content_json["celcius"] = Country::convert($content_json["main"], "celcius");
+                $json["kelvin"] = array();
+                $content_json["kelvin"] = Country::convert($content_json["main"], "kelvin");
 
                 return response()->json($content_json,200);
             } catch (\Exception $e){
                 return response()->json(['error' => 'Not Found'],404);
             }
         } else{
-            return response()->json(['error' => 'Unauthorized'],401);
+            return response()->json(['error' => 'Unauthorized, not available from browser'],401);
         }
     }
 
-    public function  getByCountryCode ( Request $request,$code )
+    public function  getCountryByCode ( Request $request,$code )
     {
         if ($request->isJson()) {
 
             try {
-
                 $city = Country::getCountryByCode(strtoupper($code));
                 $client = new Client();
                 $appid = env('OPENWEATHER_KEY');
+                $default = env('FORMAT_SISTEM');
+                $baser_url = env('BASE_URL');
 
-                $response = $client->request('GET', 'https://api.openweathermap.org/data/2.5/weather', [
+                $response = $client->request('GET', $baser_url, [
                     'query' => [
                         'q' => $city,
-                        'appid' => $appid
+                        'appid' => $appid,
+                        'units' => $default
                     ],
                     'headers' => [
                         'Accept' => 'application/json',
@@ -83,8 +91,8 @@ class OpenWeatherController extends BaseController
                 $content_json["fahrenheit"] = array();
                 $content_json["fahrenheit"] = Country::convert($content_json["main"], "fahrenheit");
 
-                $json["celcius"] = array();
-                $content_json["celcius"] = Country::convert($content_json["main"], "celcius");
+                $json["kelvin"] = array();
+                $content_json["kelvin"] = Country::convert($content_json["main"], "kelvin");
 
                 return response()->json($content_json,200);
 
@@ -93,7 +101,7 @@ class OpenWeatherController extends BaseController
             }
 
         } else {
-            return response()->json(['error' => 'Unauthorized'],401);
+            return response()->json(['error' => 'Unauthorized, not available from browser'],401);
         }
     }
 }
